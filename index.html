@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MenuAR</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: sans-serif; background: #0f0f0f; color: #fff; }
+    .header { background: #1a1a1a; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 18px; font-weight: 600; }
+    .logo span { color: #FF6B35; }
+    .table-tag { background: #2a2a2a; padding: 4px 12px; border-radius: 99px; font-size: 12px; }
+    model-viewer { width: 100%; height: 320px; background: #1a1a1a; }
+    .dish-info { padding: 14px 16px; }
+    .dish-name { font-size: 20px; font-weight: 600; }
+    .dish-price { color: #FF6B35; font-size: 18px; font-weight: 600; margin-top: 4px; }
+    .nutrition { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin: 14px 16px; }
+    .nut { background: #1a1a1a; border-radius: 10px; padding: 10px 6px; text-align: center; }
+    .nut-val { font-size: 18px; font-weight: 600; }
+    .nut-label { font-size: 10px; color: #888; margin-top: 2px; }
+    .toppings { padding: 0 16px 14px; }
+    .toppings-title { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+    .topping-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .topping { padding: 6px 12px; border-radius: 99px; border: 1px solid #333; font-size: 12px; cursor: pointer; color: #aaa; }
+    .topping.active { background: #FF6B35; border-color: #FF6B35; color: #fff; }
+    .order-btn { margin: 0 16px 12px; width: calc(100% - 32px); padding: 14px; background: #FF6B35; color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; }
+    .spin-btn { margin: 0 16px 20px; width: calc(100% - 32px); padding: 11px; background: #1a1a1a; color: #fff; border: 1px solid #333; border-radius: 12px; font-size: 13px; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">Menu<span>AR</span></div>
+  <div class="table-tag">Table 4</div>
+</div>
+
+<model-viewer
+  src="pizza (1).glb"
+  alt="Pizza"
+  auto-rotate
+  camera-controls
+  shadow-intensity="1">
+</model-viewer>
+
+<div class="dish-info">
+  <div class="dish-name">Veggie Pizza</div>
+  <div class="dish-price">₹299</div>
+</div>
+
+<div class="nutrition">
+  <div class="nut"><div class="nut-val" id="cal">320</div><div class="nut-label">Calories</div></div>
+  <div class="nut"><div class="nut-val" id="protein">12g</div><div class="nut-label">Protein</div></div>
+  <div class="nut"><div class="nut-val" id="fat">14g</div><div class="nut-label">Fat</div></div>
+  <div class="nut"><div class="nut-val" id="carbs">38g</div><div class="nut-label">Carbs</div></div>
+</div>
+
+<div class="toppings">
+  <div class="toppings-title">Customize toppings</div>
+  <div class="topping-list">
+    <div class="topping" onclick="toggle(this,15,1,2,3)">Extra Cheese</div>
+    <div class="topping" onclick="toggle(this,10,0,1,2)">Olives</div>
+    <div class="topping" onclick="toggle(this,8,0,1,1)">Jalapeños</div>
+    <div class="topping" onclick="toggle(this,12,1,1,2)">Mushrooms</div>
+    <div class="topping" onclick="toggle(this,20,0,0,5)">Corn</div>
+  </div>
+</div>
+
+<button class="order-btn" onclick="order()">Add to order — ₹<span id="price">299</span></button>
+<button class="spin-btn" onclick="spin()">Can't decide? Spin the wheel 🎲</button>
+
+<script>
+  let base = { cal:320, protein:12, fat:14, carbs:38, price:299 };
+  let extra = { cal:0, protein:0, fat:0, carbs:0, price:0 };
+
+  function toggle(el, cal, p, f, c) {
+    el.classList.toggle('active');
+    const sign = el.classList.contains('active') ? 1 : -1;
+    extra.cal += sign*cal; extra.protein += sign*p;
+    extra.fat += sign*f; extra.carbs += sign*c; extra.price += sign*10;
+    document.getElementById('cal').textContent = base.cal + extra.cal;
+    document.getElementById('protein').textContent = (base.protein+extra.protein)+'g';
+    document.getElementById('fat').textContent = (base.fat+extra.fat)+'g';
+    document.getElementById('carbs').textContent = (base.carbs+extra.carbs)+'g';
+    document.getElementById('price').textContent = base.price + extra.price;
+  }
+
+  function order() {
+    const msg = encodeURIComponent('New order from Table 4:\nVeggie Pizza ₹'+(base.price+extra.price));
+    window.open('https://wa.me/91XXXXXXXXXX?text='+msg);
+  }
+
+  function spin() {
+    alert('Spinning... You got: Veggie Pizza! 🍕');
+  }
+</script>
+
+</body>
+</html>
